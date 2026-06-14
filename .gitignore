@@ -1,0 +1,13 @@
+# Ignore local virtual environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Ignore heavy AI model weights files (GitHub will reject files >100MB)
+*.keras
+
+# Ignore temporary uploaded user images and databases
+static/uploads/*
+!static/uploads/.gitkeep
+doctors.db
