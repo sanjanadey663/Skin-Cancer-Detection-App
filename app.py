@@ -13,22 +13,22 @@ UPLOAD_FOLDER = os.path.join('static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# ==========================================
+
 # 1. AI MODEL INITIALIZATION & LOADING
-# ==========================================
+
 MODEL_PATH = 'densenet121_ham10000.keras'
 
 print("🔄 Loading DenseNet121 Skin Cancer Diagnostic Weights...")
 try:
-    # Compile=False loads the model rapidly without looking for custom training metrics
+    
     model = tf.keras.models.load_model(MODEL_PATH, compile=False)
     print("✅ AI Model successfully cached into system memory!")
 except Exception as e:
-    print(f"❌ Critical Error: Could not locate or read {MODEL_PATH}.")
+    print(f" Critical Error: Could not locate or read {MODEL_PATH}.")
     print("Please verify the file name is correct and placed in the main directory.")
     print(str(e))
 
-# Clean, human-readable labels matching your expanded Knowledge Hub articles
+
 CLASSES = {
     0: 'Actinic keratoses (akiec) - Pre-Malignant',
     1: 'Basal cell carcinoma (bcc) - Malignant Carcinoma',
@@ -39,9 +39,9 @@ CLASSES = {
     6: 'Vascular lesions (vasc) - Benign Vascular Proliferation'
 }
 
-# ==========================================
+
 # 2. DATABASE ROUTING HELPER FUNCTION
-# ==========================================
+
 def get_randomized_kolkata_doctors():
     """Queries doctors.db and returns 4 random specialists to prevent UI clutter."""
     try:
@@ -77,9 +77,9 @@ def get_randomized_kolkata_doctors():
         print(f"Database extraction error: {str(e)}")
         return []
 
-# ==========================================
+
 # 3. CORE FLASK APPLICATION ROUTING
-# ==========================================
+
 
 @app.route('/')
 def home():
@@ -97,18 +97,17 @@ def predict():
         return jsonify({'error': 'No file selected for evaluation'}), 400
 
     try:
-        # Save file to your local computer's drive temporarily
+        
         filename = file.filename
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
-        # Preprocess incoming image to perfectly match DenseNet input configurations
-        # Rescale parameters match your ImageDataGenerator (1./255)
+        
         img = image.load_img(filepath, target_size=(224, 224))
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-        # Run model forward pass prediction
+        
         predictions = model.predict(img_array)[0]
         max_index = np.argmax(predictions)
         
@@ -119,7 +118,7 @@ def predict():
         if os.path.exists(filepath):
             os.remove(filepath)
 
-        # Core API response payload
+        
         response_payload = {
             'disease': disease_profile,
             'probability': f"{probability_score:.2f}%",
@@ -137,9 +136,9 @@ def predict():
         print(f"🚨 Pipeline Exception triggered: {str(e)}")
         return jsonify({'error': f'Internal server exception during matrix evaluation: {str(e)}'}), 500
 
-# ==========================================
+
 # 4. ENGINE STARTER
-# ==========================================
+
 if __name__ == '__main__':
     # Starts your server at http://127.0.0.1:5000/
     app.run(host='127.0.0.1', port=5000, debug=True)
