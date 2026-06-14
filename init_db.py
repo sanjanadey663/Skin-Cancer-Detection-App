@@ -1,10 +1,10 @@
 import sqlite3
 
-# Connect to your local database file
+
 conn = sqlite3.connect('doctors.db')
 cursor = conn.cursor()
 
-# Ensure schema is correct
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS doctors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +19,7 @@ cursor.execute('''
 # Clear old entries to prevent duplicates
 cursor.execute("DELETE FROM doctors")
 
-# 52 Verified Dermatologist entries from HexaHealth Kolkata registries
+
 kolkata_doctors = [
     # Manipal Hospital (formerly Columbia Asia), Salt Lake
     ('Dr. Rathindra Nath Dutta', 'Manipal Hospital', 'Salt Lake City, Near Godrej Waterside, Sector V, Kolkata', '+91 33 6601 1600', 'Clinical Dermatology, Lesion Evaluation'),
